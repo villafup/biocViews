@@ -3,12 +3,12 @@ title: "HOWTO generate biocViews HTML"
 author: "S. Falcon and V.J. Carey"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 vignette: >
-  %\VignetteIndexEntry{Quick-start Guide}
+  %\VignetteIndexEntry{biocViews-HOWTO}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 output:
   BiocStyle::html_document:
-    number_sections: no
+    number_sections: true
     toc: yes
     toc_depth: 2
 editor_options: 
@@ -18,12 +18,7 @@ editor_options:
 
 
 ```{r include=FALSE}
-
-if(!require(biocViews)){
-    install.packages("biocViews")
-    library(Biobase)
-}
-
+library(biocViews)
 ```
 
 # Overview
@@ -47,11 +42,9 @@ We use `dot` to describe the vocabulary. For details on the `dot`
 syntax, see <http://www.graphviz.org/doc/info/lang.html>.
 
 ```{r Establishing a vocabulary of terms, echo=TRUE, message=FALSE, warning=FALSE}
-
 vocabFile <- system.file("dot/biocViewsVocab.dot", package="biocViews")
 cat(readLines(vocabFile)[1:20], sep="\n")
 cat("...\n")
-
 ```
 
 The dot description is transformed to a GXL document using `dot2gxl`, a
@@ -107,18 +100,13 @@ Bioconductor repositories: *Software*, *AnnotationData*, and
 `getBiocSubViews`. Below, we demonstrate how to build the *Software* set
 of views.
 
-
 ```{r Querying a repository, echo=TRUE, message=FALSE, warning=FALSE}
-
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="") 
 biocViews <- getBiocSubViews(reposUrl, biocViewsVocab, topTerm="Software")
 print(biocViews[1:2])
-
 ```
-
-
 
 To query the currently available vocabulary terms, use function
 `getSubTerms` on the *graphNEL* object `biocViewsVocab`. The second
@@ -127,12 +115,8 @@ all subterms should be returned. For a complete list use
 `term="BiocViews"`.
 
 ```{r getSubTerms, message=FALSE, warning=FALSE}
-
 getSubTerms(biocViewsVocab, term="Technology")
-
 ```
-
-
 
 # Generating HTML
 
@@ -140,11 +124,9 @@ By default, the set of HTML views will link to package description pages
 located in the html subdirectory of the remote repository.
 
 ```{r Generating HTML, echo=TRUE, message=FALSE, warning=FALSE}
-
 viewsDir <- file.path(tempdir(), "biocViews")
 dir.create(viewsDir)
 writeBiocViews(biocViews, dir=viewsDir)
 dir(viewsDir)[1:2]
- 
 ```
 
